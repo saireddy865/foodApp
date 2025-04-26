@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    <!-- Profile Section -->
+<section class="profile-section" style="padding: 40px; background-color: #f9f9f9; text-align: center; overflow: hidden;">
+    <div class="profile-container" style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <!-- Profile Picture -->
+        <img src="https://w7.pngwing.com/pngs/196/402/png-transparent-ghostface-horror-slasher-scream-youtube-horror-thumbnail.png" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid #f44336; margin-bottom: 20px;">
+        
+        <!-- User Name -->
+        <h2 style="font-size: 2em; color: #333; margin-bottom: 10px;" id="userName">psycho killer</h2>
+        
+        <!-- User Bio -->
+        <p style="color: #666; font-size: 1.1em; margin-bottom: 20px;" id="userBio">
+            Test your recipe thoroughly. Before publishing, make sure you've tested the recipe multiple times. ...
+        </p>
+        
+        <!-- User Stats -->
+        <div class="user-stats" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+            <div>
+                <h3 style="font-size: 1.5em; color: #f44336; margin: 0;">150</h3>
+                <p style="color: #666; margin: 0;">Recipes</p>
+            </div>
+            <div>
+                <h3 style="font-size: 1.5em; color: #f44336; margin: 0;">10K</h3>
+                <p style="color: #666; margin: 0;">Followers</p>
+            </div>
+            <div>
+                <h3 style="font-size: 1.5em; color: #f44336; margin: 0;">500</h3>
+                <p style="color: #666; margin: 0;">Following</p>
+            </div>
+        </div>
+        
+        <!-- Edit Profile Button -->
+        <button id="editProfileBtn" style="background-color: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 1em; cursor: pointer; transition: background-color 0.3s ease;">
+            Edit Profile
+        </button>
+
+        <!-- Loader -->
+        <div id="loader" style="display: none; margin-top: 20px;">
+            <div class="loader-spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #f44336; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+            <p style="color: #666; margin-top: 10px;">Saving changes...</p>
+        </div>
+    </div>
+</section>
+
+<!--  chat  -->
+
+<div class="container">
+    <h3 style="text-align: center; padding: 10px; font-size: 20px; ">Chat with us</h3>
+    <input type="text" placeholder="What do you want" style="text-align: center; display: flex;justify-content: center;">
+</div>
+<script>
+
+
+document.getElementById('editProfileBtn').addEventListener('click', function() {
+    const userName = document.getElementById('userName');
+    const userBio = document.getElementById('userBio');
+    const loader = document.getElementById('loader');
+    const button = this;
+
+    if (button.textContent === "Edit Profile") {
+        // Enable editing
+        userName.contentEditable = true;
+        userBio.contentEditable = true;
+
+        // Add a border to indicate editing mode
+        userName.style.border = "1px solid #f44336";
+        userBio.style.border = "1px solid #f44336";
+
+        // Change button text to "Save"
+        button.textContent = "Save";
+    } else {
+        // Show loader
+        loader.style.display = "block";
+
+        // Simulate saving changes (e.g., API call)
+        setTimeout(() => {
+            // Disable editing
+            userName.contentEditable = false;
+            userBio.contentEditable = false;
+
+            // Remove borders
+            userName.style.border = "none";
+            userBio.style.border = "none";
+
+            // Hide loader
+            loader.style.display = "none";
+
+            // Change button text back to "Edit Profile"
+            button.textContent = "Edit Profile";
+        }, 2000); // Simulate a 2-second delay for saving
+    }
+});
+</script>
+</body>
+</html>

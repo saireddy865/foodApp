@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+</head>
+<body>
+    <nav>
+        <h1>Recipe App</h1>
+        <!-- Add your links here -->
+    </nav>
+
+    <!-- Login Button and Form Modal -->
+    <button id="login-btn" style="background-color: #f44336; color: white;">Login</button>
+
+    <!-- Modal for Login Form -->
+    <div id="login-modal" style="display: none;">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="email" id="email" placeholder="Enter your email" required />
+            <input type="password" id="password" placeholder="Enter your password" required />
+            <button type="submit">Login</button>
+        </form>
+        <button id="close-login">Close</button>
+    </div>
+
+    <script>
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Show the login modal when the login button is clicked
+        const loginBtn = document.getElementById("login-btn");
+        const loginModal = document.getElementById("login-modal");
+        const closeModalBtn = document.getElementById("close-login");
+
+        loginBtn.addEventListener("click", function() {
+            loginModal.style.display = "block"; // Show the login modal
+        });
+
+        closeModalBtn.addEventListener("click", function() {
+            loginModal.style.display = "none"; // Close the modal when the close button is clicked
+        });
+
+        // Handle login form submission
+        const loginForm = document.getElementById("login-form");
+        loginForm.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            // Firebase Authentication login
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log("Login Successful:", user);
+                    alert("Login successful!");
+                    loginModal.style.display = "none"; // Close modal after successful login
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error("Error:", errorMessage);
+                    alert("Login failed: " + errorMessage);
+                });
+        });
+    </script>
+</body>
+</html>

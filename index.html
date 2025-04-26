@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #3a2a1d;
+            color: #fff;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Header */
+        header nav {
+            background-color: #212121;
+            padding: 1rem 2rem;
+            top: 0;
+            left: 0;
+            width: 100%;
+            position: fixed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        header nav:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        header nav h1 {
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #FAB12F;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        header nav h1:hover {
+            transform: scale(1.05);
+            color: #ff6659;
+        }
+
+        header nav form {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            transition: opacity 0.3s ease;
+        }
+
+        form input[type="text"] {
+            flex-grow: 1;
+            margin-right: 10px;
+            padding: 0.6rem;
+            border-radius: 10px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        form input[type="text"]:focus {
+            transform: scale(1.02);
+            box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+        }
+
+        form button[type="submit"] {
+            border: none;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            background-color: #FAB12F;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        form button[type="submit"]:hover,
+        .recipe button:hover,
+        .recipe-close-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        /* Navigation Links */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #b5b5ba;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #FAB12F;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Recipe Container */
+        .recipe-container {
+            text-align: center;
+            margin-top: 5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            place-items: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .recipe {
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            color: #000;
+            border-radius: 6px;
+            box-shadow: 0 5px 10px rgba(78, 73, 73, 0.1), -5px -5px 10px rgba(34, 35, 34, 0.5);
+            cursor: pointer;
+            max-width: 400px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .recipe:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .recipe img {
+            height: 300px;
+            width: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .recipe:hover img {
+            opacity: 0.9;
+        }
+
+        .recipe h3 {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .recipe:hover h3 {
+            color: #FAB12F;
+        }
+
+        .recipe button {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: 600;
+            padding: 0.6rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 1rem auto;
+            background-color: #FAB12F;
+            color: #fff;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Recipe Details Popup */
+        .recipe-details {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #363656d8;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+            max-height: 90vh;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .recipe-close-btn {
+            border: none;
+            font-size: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background-color: #FAB12F;
+            color: #fff;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 2rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        /* Card Container */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .card-img-top {
+            transform: scale(1.1);
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #d32f2f;
+            border: none;
+            padding: 0.6rem 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #b71c1c;
+            transform: scale(1.05);
+        }
+
+        /* Carousel */
+        .carousel-container {
+            width: 100%;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            margin: 0.5rem;
+        }
+
+        /* Scrollbar Styling */
+        .recipe-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .recipe-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .recipe-details::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .recipe-details::-webkit-scrollbar-thumb {
+            background: #b5b5ba;
+            border-radius: 16px;
+        }
+
+        body::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: #a1a1a1;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #ebebeb;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #212121;
+                padding: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            header nav form {
+                max-width: 400px;
+            }
+
+            .recipe-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .card-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            header nav {
+                flex-wrap: wrap;
+                padding: 1rem;
+            }
+
+            header nav form {
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            .recipe-details {
+                width: 95%;
+                height: 85%;
+            }
+
+            .carousel img {
+                max-width: 300px;
+            }
+
+            .main-container img {
+                height: 50vh;
+            }
+
+            .popular-recipes div {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .popular-recipes img {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .popular-recipes p {
+                font-size: 1.5rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header nav h1 {
+                font-size: 1.2rem;
+            }
+
+            form input[type="text"] {
+                padding: 0.5rem;
+            }
+
+            form button[type="submit"] {
+                padding: 0.5rem;
+            }
+
+            .recipe-container {
+                grid-template-columns: 1fr;
+            }
+
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+
+            .carousel img {
+                max-width: 100%;
+            }
+
+            .youtube-channel div {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .youtube-channel img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .youtube-channel a {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Popular Recipes Styling */
+        .popular-recipes {
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .popular-recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            justify-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .popular-recipe-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .popular-recipe-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .popular-recipe-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .popular-recipe-item p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #333;
+            padding: 1rem;
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: #212121;
+            color: #fff;
+            padding: 3rem 2rem;
+            font-family: Arial, sans-serif;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            color: #FAB12F;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #b5b5ba;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: #FAB12F;
+        }
+
+        .footer-section input[type="email"] {
+            padding: 0.6rem;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section button {
+            background-color: #FAB12F;
+            color: #fff;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .footer-section button:hover {
+            background-color: #d32f2f;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #b5b5ba;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .footer-logo h2 {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #fff;
+        }
+
+        .footer-controls select,
+        .footer-controls button {
+            padding: 0.5rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            border-radius: 5px;
+            border: none;
+            margin-left: 0.5rem;
+        }
+
+        .footer-controls button {
+            background-color: #FAB12F;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .footer-controls button:hover {
+            background-color: #d32f2f;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FAB12F;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .clear-results-btn {
+            border: none;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            background-color: #FAB12F;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: none;
+        }
+
+        .clear-results-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <h1>Recipe App</h1>
+            <form>
+                <div style="position: relative;">
+                    <input type="text" placeholder="Search for recipes..." class="searchBox"
+                        aria-label="Search for recipes" autocomplete="off">
+                    <button type="button" class="clear-btn"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; display: none;"
+                        aria-label="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <button type="submit" class="searchBtn" aria-label="Search recipes">Search</button>
+            </form>
+            <div class="nav-links">
+                <a href="#" id="home-btn">Home</a>
+                <a href="fav.html" class="fav-button">Favorites</a>
+                <a href="tranding.html">Trending Recipes</a>
+                <a href="./profile.html">About Us</a>
+                <a href="./login.html"><i class="fa-solid fa-user"></i></a>
+            </div>
+            <div class="hamburger">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main style="margin-top: 80px;">
+        <section class="recipe-section">
+            <div class="clear-results-wrapper" style="text-align: center; margin-bottom: 1rem;">
+                <!-- <button type="button" class="clear-results-btn" aria-label="Clear search results">
+                    <i class="fas fa-times"></i>
+                </button> -->
+            </div>
+            <div class="recipe-container"></div>
+            <div class="recipe-details">
+                <button type="button" class="recipe-close-btn"><i class="fas fa-times"></i></button>
+                <div class="recipe-details-content"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Hero Section -->
+    <div class="main-container" style="position: relative; width: 100vw; height: 100vh; overflow: hidden;">
+        <img src="https://images7.alphacoders.com/109/1097602.jpg" alt=""
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
+    </div>
+
+    <!-- Card Container -->
+    <div class="card-container">
+        <div class="card">
+            <img src="https://i.ytimg.com/vi/zzXfVoYrNJM/hq720.jpg" class="card-img-top" alt="Image">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMIUqEPMGebYGdYmVOxayozDaashvqrcgHcw&s"
+                class="card-img-top" alt="Image">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://hips.hearstapps.com/hmg-prod/images/tuna-melt-058-1550261086.jpg?crop=1xw:0.8333333333333334xh;center,top&resize=980:*"
+                class="card-img-top" alt="Image">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJOn7jgbceOQ3YKSQFAzKxia4rMrk4nOBUaA&s"
+                class="card-img-top" alt="Image">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://www.blissofcooking.com/wp-content/uploads/2017/03/Mushroom-and-Baby-Corn-Jalfrezi-Feature-e1490180514124.jpg"
+                class="card-img-top" alt="Image">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxK4g9Av2eCGkP1tuIXPSEoWvYGVQXM0lbGw&s"
+                class="card-img-top" alt="Image">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXvAsMLWFmHml-O1cY2Ycot6H-7LvM3O-rAQ&s"
+                class="card-img-top" alt="Image">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div style="background-color: #f9f9f9; padding: 2rem; text-align: center;">
+        <h2 style="font-size: clamp(1.5rem, 5vw, 2rem); color: #333;">Hi! I’m Lindsay.</h2>
+        <img src="https://via.placeholder.com/150" alt="Lindsay"
+            style="border-radius: 50%; width: 100px; height: 100px;">
+        <p style="color: #666; font-size: clamp(0.9rem, 2.5vw, 1rem);">Former teacher, now full-time blogger. I love my
+            camera, lake days, and dark chocolate.</p>
+        <a href="./login.html" style="color: #0073e6; text-decoration: none;">Learn More</a>
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel-container">
+        <div id="carousel" class="carousel">
+            <img src="https://img.freepik.com/free-photo/top-view-delicious-cooked-vegetables-sliced-with-different-seasonings-dark-background-soup-food-sauce-meal-vegetable_140725-85838.jpg"
+                alt="Image 1">
+            <img src="https://media.istockphoto.com/id/1197494143/photo/men-eating-vegan-creamy-roasted-pumpkin-soup.jpg?s=612x612&w=0&k=20&c=NK_z9zwAsRZZLeFWgcO-b4gsHnYg4kVFdvK6IYDOMXY="
+                alt="Image 2">
+            <img src="https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Fish-Tacos-1337495.jpg?quality=90&resize=556,505"
+                alt="Image 3">
+            <img src="https://cdn.loveandlemons.com/wp-content/uploads/2024/01/quesadilla.jpg" alt="Image 4">
+            <img src="https://cdn.loveandlemons.com/wp-content/uploads/2024/01/quesadilla.jpg" alt="Image 5">
+            <img src="https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Fish-Tacos-1337495.jpg?quality=90&resize=556,505"
+                alt="Image 6">
+            <img src="https://cdn.loveandlemons.com/wp-content/uploads/2024/01/quesadilla.jpg" alt="Image 7">
+            <img src="https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Fish-Tacos-1337495.jpg?quality=90&resize=556,505"
+                alt="Image 8">
+            <img src="https://cdn.loveandlemons.com/wp-content/uploads/2024/01/quesadilla.jpg" alt="Image 9">
+        </div>
+    </div>
+
+    <!-- YouTube Channel -->
+    <div class="youtube-channel"
+        style="width: 100%; padding: 2rem; text-align: center; font-family: Arial, sans-serif;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+            <img src="https://images.prestigeonline.com/wp-content/uploads/sites/4/2021/01/07141341/gordon-ramsay-masterclass-ft-blog0918.jpg"
+                style="border-radius: 50%; width: 120px; height: 120px;">
+            <h2 style="margin: 1rem; font-size: clamp(1.2rem, 3vw, 1.5rem);">Gordon Ramsay</h2>
+            <p style="margin: 1rem; color: #555; font-size: clamp(0.9rem, 2.5vw, 1rem);">Gordon Ramsay Food brings you
+                the best and soul touched recipes to your Home. Our Recipes are Fun to watch and easy to make.</p>
+            <p style="margin: 1rem; font-weight: bold;">Subscribers: 2.2M</p>
+            <a href="https://www.youtube.com" target="_blank"
+                style="display: block; margin: 1rem auto; text-decoration: none; background: red; color: white; padding: 0.6rem; border-radius: 5px; width: 100%; max-width: 300px;">View
+                Channel→</a>
+        </div>
+    </div>
+
+    <!-- Popular Recipes -->
+    <div class="popular-recipes">
+        <h1 style="margin: 1rem 0; font-size: clamp(1.5rem, 5vw, 2rem);">Popular Recipe ⭐⭐⭐⭐⭐</h1>
+        <h2 style="margin: 1rem 0; font-size: clamp(1.2rem, 3vw, 1.5rem);">Delicious Recipes</h2>
+        <div class="popular-recipes-grid">
+            <div class="popular-recipe-item">
+                <img src="https://i.ytimg.com/vi/7xBPCu85u_I/hq720.jpg" alt="Wedding Style Bottle Gourd Halwa">
+                <p>Wedding Style Bottle Gourd Halwa Recipe</p>
+            </div>
+            <div class="popular-recipe-item">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwuaeAFUx3bYe8WXj-D_IwdXcsIQor6DJuuQ&s"
+                    alt="Bang Bang Cauliflower">
+                <p>Bang Bang Cauliflower Recipe</p>
+            </div>
+            <div class="popular-recipe-item">
+                <img src="https://vismaifood.com/storage/app/uploads/public/9b9/d91/90e/thumb__700_0_0_0_auto.jpg"
+                    alt="Thick And Tasty Ullipaya Pulusu">
+                <p>Thick And Tasty Ullipaya Pulusu Recipe</p>
+            </div>
+            <div class="popular-recipe-item">
+                <img src="https://www.blissofcooking.com/wp-content/uploads/2017/03/Mushroom-and-Baby-Corn-Jalfrezi-Feature-e1490180514124.jpg"
+                    alt="Mushroom Baby Corn Masala">
+                <p>Mushroom Baby Corn Masala Recipe</p>
+            </div>
+        </div>
+        <p style="margin: 1rem 0; font-weight: bold;">Subscribers: 900K</p>
+        <a href="https://www.youtube.com" target="_blank"
+            style="display: block; margin: 1rem auto; text-decoration: none; background: red; color: white; padding: 0.6rem; border-radius: 5px; width: 150px; text-align: center;">View
+            Channel</a>
+        <iframe width="100%" style="max-width: 700px; height: auto; aspect-ratio: 16/9;"
+            src="https://www.youtube.com/embed/ur6VGfcR93E?si=aFd8dxacsrcYrOKZ" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Stay Informed</h3>
+                <p>Sign up for our newsletter and stay updated.</p>
+                <input type="email" placeholder="Your Email Address">
+                <button>Subscribe →</button>
+            </div>
+            <div class="footer-section">
+                <h3>Stories</h3>
+                <a href="#">Find out What makes mass General Unique.</a>
+                <h3>Events</h3>
+                <a href="#">Turn your empathy into action.</a>
+                <h3>Where to Give</h3>
+                <a href="#">Where can you make a difference?</a>
+                <p>10K Coders, Road No.1</p>
+                <p>KPHB, Kukatpally</p>
+            </div>
+            <div class="footer-section">
+                <h3>Connect with Us</h3>
+                <p>Facebook</p>
+                <p>Twitter</p>
+                <p>Instagram</p>
+                <p>Mob: +123-0956-547</p>
+                <a href="#">You Want to know more? Click here</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger Menu Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Carousel
+        const carousel = document.getElementById('carousel');
+        let index = 0;
+        const images = carousel.querySelectorAll('img');
+        const totalImages = images.length;
+
+        function scrollImages() {
+            index++;
+            if (index >= totalImages) index = 0;
+            const offset = -index * (images[0].clientWidth + 16); // Account for margin
+            carousel.style.transform = `translateX(${offset}px)`;
+        }
+
+        setInterval(scrollImages, 2000);
+
+        // Adjust carousel on window resize
+        window.addEventListener('resize', () => {
+            const offset = -index * (images[0].clientWidth + 16);
+            carousel.style.transform = `translateX(${offset}px)`;
+        });
+    </script>
+    <script src="./script.js"></script>
+</body>
+
+</html>

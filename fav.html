@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        header nav {
+            background-color: #212121;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header nav h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #f44336;
+        }
+        .fav-button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        
+       
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3a2a1d;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .recipe-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .fav-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(1,3fr);
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .fav-item:hover {
+            transform: scale(1.05);
+        }
+
+        .fav-item img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .fav-item h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .fav-item p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .fav-item span {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+      
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Recipe App</h1>
+            <a href="index.html" class="fav-button"> Go To Home Page</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <div class="recipe-container">
+                <!-- <!-<h2>Search your favorite recipes...</h2> - -->
+            </div>
+        </section>
+    </main>
+
+    <footer style="background-color: #1a3b50; color: white; padding: 40px; text-align: left; font-family: Arial, sans-serif; width: 100%;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; width: 100%;">
+            <div style="flex: 1; min-width: 300px;">
+                <h1 style="color: #a6dcef; margin-bottom: 15px;">Stay Informed</h1>
+                <p style="margin-bottom: 15px;">Sign up for our newsletter and stay updated.</p>
+                <input type="email" placeholder="Your Email Address" style="padding: 10px;  margin-bottom: 15px; border-radius: 5px; border: none;">
+                <button style="background-color: #5cb3ff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; ">Subscribe →</button>
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <h2 style="color: #a6dcef; margin-bottom: 15px;">Stories.</h2>
+                <a href="" style="margin-top: 10px; text-decoration: none; color:aqua;">Find out What makes mass General Unique. Get insppired.</a>
+                <h2 style="color: #a6dcef; margin-bottom: 15px; margin-top: 10px;" >Events.</h2>
+                <a href="" style="margin-top: 10px; text-decoration: none; color: aqua;"> Turn your empathy into action. Get involved.</a>
+                <h2 style="color: #a6dcef; margin-bottom: 15px; margin-top: 10px;">Where to Give.</h2>
+                <a href="" style="margin-top: 10px; text-decoration: none; color: aqua;"> Where can you make a difference? Getinformed </a>
+                <h2 style="color: #a6dcef; margin-bottom: 15px; margin-top: 10px;">How to Give.</h2>
+                <a href="" style="margin-top: 10px; text-decoration: none; color: aqua;"> Your generosity. Your impact. Your way. Get invested.</a>
+                <p style="margin-bottom: 10px; margin-top: 10px;">10K Coders, Road No.1</p>
+                <p style="margin-bottom: 15px; margin-top: 10px;">KPHB, Kukatpally</p>
+                <h3 style="color: #a6dcef; margin-bottom: 15px; margin-top: 10px;">Quick Links</h3>
+                <a href="#" style="color: #a6dcef; text-decoration: none; display: block; margin-bottom: 5px; margin-top: 10px;">Find out what makes our recipes special</a>
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <h2 style="color: #a6dcef; margin-bottom: 15px; margin-left: 30px;">About Us</h2>
+                <p style="margin-bottom: 10px;">frequently Asked Questions</p>
+                <p style="margin-bottom: 10px;"> Massachusetts General Recipe</p>
+                <p style="margin-bottom: 10px;">Mase General Brigham </p>
+                <p style="margin-bottom: 10px;">Harvard recipe School </p>
+                <p style="margin-bottom: 10px;">Contact me Ram</p>
+                <p style="margin-bottom: 10px;">Cell : 9990001123 </p>
+                <a href="#" style="color: #a6dcef; text-decoration: none; display: block; margin-bottom: 5px;"> You What to know more? Click here</a>
+                <a href="#" style="color: #a6dcef; text-decoration: none; display: block;">Thank you.</a>
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <h2 style="color: #a6dcef; margin-bottom: 15px; margin-left: 30px;">PRIVACY & SECURITY</h2>
+                <p style="margin-bottom: 10px;">Pledge to Donors</p>
+                <p style="margin-bottom: 10px;"> Privacy policy</p>
+                <p style="margin-bottom: 10px;">Social Media policy</p>
+                <p style="margin-bottom: 10px;">Copyright Notice</p>
+                <a href="#" style="color: #a6dcef; text-decoration: none; display: block; margin-bottom: 5px;"> You What to know more? Click here</a>
+                <a href="#" style="color: #a6dcef; text-decoration: none; display: block;">Thank you.</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="./favorites.js">
+       
+  
+document.addEventListener("DOMContentLoaded", () => {
+    const favContainer = document.querySelector(".recipe-container");
+    let favoriteMeals = JSON.parse(localStorage.getItem("favoriteMeals")) || [];
+
+    if (favoriteMeals.length === 0) {
+        favContainer.innerHTML = `<h2 style="color: white;" >No favorite recipes added yet.</h2>`;
+        return;
+    }
+
+    favoriteMeals.forEach(meals => {
+        let favDiv = document.createElement("div");
+        favDiv.classList.add('fav-item');
+        favDiv.innerHTML = `
+            <img src="${meals.strMealThumb}">
+            <h3>${meals.strMeal}</h3>
+                <p><span>${meals.strArea}</span> Dish</p>
+                <p>Belongs to <span>${meals.strCategory}</span> Category</p>
+            <button class="remove-btn" data-id="${meals.idMeal}">Remove</button>
+        `;
+
+        favDiv.querySelector(".remove-btn").addEventListener("click", (e) => {
+            let idMeal = e.target.getAttribute("data-id");
+            favoriteMeals = favoriteMeals.filter(item => item.idMeal !== idMeal);
+            localStorage.setItem("favoriteMeals", JSON.stringify(favoriteMeals));
+            location.reload();
+        });
+
+        favContainer.appendChild(favDiv);
+    });
+});
+
+ 
+      </script>
+    
+    
+    
+</body>
+</html>
