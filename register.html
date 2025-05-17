@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
             box-sizing: border-box;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
+
         body {
             background-color: #3a2a1d;
             color: #fff;
@@ -22,6 +24,7 @@
             align-items: center;
             padding: 1rem;
         }
+
         .auth-container {
             background-color: #212121;
             padding: 2rem;
@@ -31,21 +34,25 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             animation: fadeIn 0.5s ease-in-out;
         }
+
         .auth-container h2 {
             color: #FAB12F;
             text-align: center;
             margin-bottom: 1.5rem;
             font-size: clamp(1.5rem, 5vw, 2rem);
         }
+
         .form-group {
             margin-bottom: 1rem;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             color: #b5b5ba;
             font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
+
         .form-group input {
             width: 100%;
             padding: 0.6rem;
@@ -56,11 +63,13 @@
             color: #fff;
             transition: all 0.3s ease;
         }
+
         .form-group input:focus {
             outline: none;
             transform: scale(1.02);
             box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
         }
+
         .auth-btn {
             width: 100%;
             padding: 0.6rem;
@@ -72,10 +81,12 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
+
         .auth-btn:hover {
             background-color: #d32f2f;
             transform: translateY(-2px);
         }
+
         .skip-btn {
             display: block;
             text-align: center;
@@ -85,56 +96,71 @@
             font-size: clamp(0.9rem, 2.5vw, 1rem);
             transition: color 0.3s ease;
         }
+
         .skip-btn:hover {
             color: #FAB12F;
         }
+
         .switch-auth {
             text-align: center;
             margin-top: 1rem;
             color: #b5b5ba;
             font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
+
         .switch-auth a {
             color: #FAB12F;
             text-decoration: none;
             transition: color 0.3s ease;
         }
+
         .switch-auth a:hover {
             color: #d32f2f;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
+
         @media (max-width: 576px) {
             .auth-container {
                 padding: 1.5rem;
             }
+
             .auth-container h2 {
                 font-size: 1.5rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="auth-container">
         <h2>Register for Recipe App</h2>
-        <form id="registerForm">
+        <form id="registerForm" action="index.html">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" required placeholder="Enter your username">
+                <input type="text" id="username" name="username" required placeholder="Enter your username">
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" required placeholder="Enter your email">
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" required placeholder="Enter your password">
+                <input type="password" id="password" name="password" required placeholder="Enter your password"
+                    minlength="6">
             </div>
             <div class="form-group">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" required placeholder="Confirm your password">
+                <input type="password" id="confirm-password" name="confirm-password" required
+                    placeholder="Confirm your password" minlength="6">
             </div>
             <button type="submit" class="auth-btn">Register</button>
         </form>
@@ -142,24 +168,57 @@
         <p class="switch-auth">Already have an account? <a href="login.html">Login here</a></p>
     </div>
 
-    <script>
-        // Firebase configuration and initialization will go here
-        // For now, basic form submission handling
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
+
+    <!-- Firebase SDK  -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJ20MqXMnMfFDGYTmKMKnOPy-fU_D0TaQ",
+            authDomain: "byjus-b5204.firebaseapp.com",
+            projectId: "byjus-b5204",
+            storageBucket: "byjus-b5204.firebasestorage.app",
+            messagingSenderId: "153492544506",
+            appId: "1:153492544506:web:da38afc27c4f4ace6f2243"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
+
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
-            
+
             if (password !== confirmPassword) {
-                alert('Passwords do not match!');
+                alert("Passwords don't match!");
                 return;
             }
-            
-            console.log('Register attempt:', { username, email, password });
-            // Add Firebase registration logic here
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                alert("Registration successful! 🎉");
+                window.location.href = "index.html"; // Redirect after signup
+            } catch (error) {
+                console.error("Error:", error);
+
+                // Better error messages
+                if (error.code === "auth/email-already-in-use") {
+                    alert("This email is already registered. Try logging in instead.");
+                }
+                else if (error.code === "auth/operation-not-allowed") {
+                    alert("Email/password sign-in is disabled. Contact support.");
+                }
+                else {
+                    alert(`Error: ${error.message}`);
+                }
+            }
         });
     </script>
 </body>
+
 </html>
